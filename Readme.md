@@ -20,8 +20,6 @@ This will give us graphs like the following
 
 ![alt tag](https://raw.githubusercontent.com/tmalaska/SparkStreaming.Sessionizatin/master/Graph2.png)
 
-![alt tag](https://raw.githubusercontent.com/tmalaska/SparkStreaming.Sessionizatin/master/Graph3.png)
-
 ### How to use
 
 1. Set up HBase table.  Just go to the HBase shell and use the following command
