@@ -1,0 +1,18 @@
+CREATE EXTERNAL TABLE hbaseTable (
+  id string,
+  ONE_TO_TEN_MINUTE_COUNT string,
+  OVER_TEN_MINUTES_COUNT string,
+  TOTAL_SESSION_COUNTS string,
+  TOTAL_SESSION_TIME string,
+  UNDER_A_MINUTE_COUNT string,
+  NEW_SESSION_COUNTS string,
+  EVENT_COUNTS string,
+  DEAD_SESSION_COUNTS string)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+  "hbase.columns.mapping" =
+  ":key,s:ONE_TO_TEN_MINUTE_COUNT,s:OVER_TEN_MINUTES_COUNT,s:TOTAL_SESSION_COUNTS,
+  s:TOTAL_SESSION_TIME,s:UNDER_A_MINUTE_COUNT,s:NEW_SESSION_COUNTS,s:EVENT_COUNTS,
+  s:DEAD_SESSION_COUNTS"
+  )
+TBLPROPERTIES("hbase.table.name" = "stats");

@@ -1,0 +1,53 @@
+10236 Marion Park Dr, Kansas City, MO 64137, USA
+
+433 California Street, Suite 1100. San Francisco, CA 94104
+
+java -cp SparkStreamingSessionization.jar com.cloudera.sa.example.sparkstreaming.sessionization.SessionDataFileWriter 1000000 weblog.txt
+
+java -cp SparkStreamingSessionization.jar com.cloudera.sa.example.sparkstreaming.sessionization.SessionDataSocketSender 127.0.0.1 42424 1000000
+
+java -cp SparkStreamingSessionization.jar com.cloudera.sa.example.sparkstreaming.sessionization.SessionDataFileHDFSWriter /user/root/ss/tmp /user/ss/input 20 10000 20000
+
+
+HBase Shell
+create 'stats', 's'
+
+spark-submit --jars /opt/cloudera/parcels/CDH/lib/zookeeper/zookeeper-3.4.5-cdh5.1.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/guava-12.0.1.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/protobuf-java-2.5.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-protocol.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-client.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-common.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop2-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-server.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/htrace-core.jar --class com.cloudera.sa.example.sparkstreaming.sessionization.SessionizeData --master yarn --deploy-mode client --executor-memory 512M --num-executors 4 --driver-java-options -Dspark.executor.extraClassPath=/opt/cloudera/parcels/CDH/lib/hbase/lib/* SparkStreamingSessionization.jar file hdfs://tedmalaska-exp-d-1.ent.cloudera.com/user/root/sessionization/results stats s hdfs://tedmalaska-exp-d-1.ent.cloudera.com/user/root/sessionization/checkpoint hdfs://tedmalaska-exp-d-1.ent.cloudera.com/user/root/sessionization/input/weblog.txt
+
+spark-submit --jars /opt/cloudera/parcels/CDH/lib/zookeeper/zookeeper-3.4.5-cdh5.1.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/guava-12.0.1.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/protobuf-java-2.5.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-protocol.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-client.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-common.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop2-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-server.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/htrace-core.jar --class com.cloudera.sa.example.sparkstreaming.sessionization.SessionizeData --master spark://tedmalaska-exp-d-1.ent.cloudera.com:7077 --deploy-mode client --executor-memory 512M --num-executors 4 --driver-java-options -Dspark.executor.extraClassPath=/opt/cloudera/parcels/CDH/lib/hbase/lib/* SparkStreamingSessionization.jar file hdfs://10.20.194.242/user/root/sessionization/results stats s hdfs://10.20.194.242/user/root/sessionization/checkpoint hdfs://10.20.194.242/user/root/sessionization/input/
+
+//play
+spark-submit --jars /opt/cloudera/parcels/CDH/lib/zookeeper/zookeeper-3.4.5-cdh5.1.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/guava-12.0.1.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/protobuf-java-2.5.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-protocol.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-client.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-common.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop2-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-server.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/htrace-core.jar --class com.cloudera.sa.example.sparkstreaming.sessionization.SessionizeData --master spark://tedmalaska-exp-d-1.ent.cloudera.com:7077 --deploy-mode client --executor-memory 512M --num-executors 4 --driver-java-options -Dspark.executor.extraClassPath=/opt/cloudera/parcels/CDH/lib/hbase/lib/* SparkStreamingSessionization.jar file hdfs://10.20.194.242/user/root/sessionization/results stats s hdfs://10.20.194.242/user/root/sessionization/checkpoint hdfs://10.20.194.242/user/root/
+
+spark-submit --jars /opt/cloudera/parcels/CDH/lib/zookeeper/zookeeper-3.4.5-cdh5.1.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/guava-12.0.1.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/protobuf-java-2.5.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-protocol.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-client.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-common.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop2-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-server.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/htrace-core.jar --class com.cloudera.sa.example.sparkstreaming.sessionization.SessionizeData --master spark://tedmalaska-exp-d-1.ent.cloudera.com:7077 --deploy-mode client --executor-memory 512M --num-executors 4 --driver-java-options -Dspark.executor.extraClassPath=/opt/cloudera/parcels/CDH/lib/hbase/lib/* SparkStreamingSessionization.jar hostPort hdfs://tedmalaska-exp-d-1.ent.cloudera.com/user/root/sessionization/results stats s hdfs://tedmalaska-exp-d-1.ent.cloudera.com/user/root/sessionization/checkpoint 127.0.0.1 42424
+
+
+//File Test
+hadoop jar SparkStreamingSessionization.jar com.cloudera.sa.example.sparkstreaming.sessionization.SessionDataFileHDFSWriter /user/root/ss/tmp /user/root/ss/input 40 10000 9990
+
+spark-submit --jars /opt/cloudera/parcels/CDH/lib/zookeeper/zookeeper-3.4.5-cdh5.1.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/guava-12.0.1.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/protobuf-java-2.5.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-protocol.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-client.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-common.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop2-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-server.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/htrace-core.jar --class com.cloudera.sa.example.sparkstreaming.sessionization.SessionizeData --master spark://tedmalaska-exp-d-1.ent.cloudera.com:7077 --deploy-mode client --executor-memory 512M --num-executors 4 --driver-java-options -Dspark.executor.extraClassPath=/opt/cloudera/parcels/CDH/lib/hbase/lib/* SparkStreamingSessionization.jar newFile hdfs://10.20.194.242/user/root/ss/results stats s hdfs://10.20.194.242/user/root/ss/checkpoint hdfs://10.20.194.242/user/root/ss/input
+
+spark-submit --jars /opt/cloudera/parcels/CDH/lib/zookeeper/zookeeper-3.4.5-cdh5.1.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/guava-12.0.1.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/protobuf-java-2.5.0.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-protocol.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-client.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-common.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop2-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-hadoop-compat.jar,/opt/cloudera/parcels/CDH/lib/hbase/hbase-server.jar,/opt/cloudera/parcels/CDH/lib/hbase/lib/htrace-core.jar --class com.cloudera.sa.example.sparkstreaming.sessionization.SessionizeData --master yarn --deploy-mode client --executor-memory 512M --num-executors 4 --driver-java-options -Dspark.executor.extraClassPath=/opt/cloudera/parcels/CDH/lib/hbase/lib/* SparkStreamingSessionization.jar newFile hdfs://10.20.194.242/user/root/ss/results stats s hdfs://10.20.194.242/user/root/ss/checkpoint hdfs://10.20.194.242/user/root/ss/input
+
+//create table
+CREATE EXTERNAL TABLE hbaseTable (
+  id string,
+  ONE_TO_TEN_MINUTE_COUNT string,
+  OVER_TEN_MINUTES_COUNT string,
+  TOTAL_SESSION_COUNTS string,
+  TOTAL_SESSION_TIME string,
+  UNDER_A_MINUTE_COUNT string,
+  NEW_SESSION_COUNTS string,
+  EVENT_COUNTS string,
+  DEAD_SESSION_COUNTS string)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES (
+  "hbase.columns.mapping" =
+  ":key,s:ONE_TO_TEN_MINUTE_COUNT,s:OVER_TEN_MINUTES_COUNT,s:TOTAL_SESSION_COUNTS,
+  s:TOTAL_SESSION_TIME,s:UNDER_A_MINUTE_COUNT,s:NEW_SESSION_COUNTS,s:EVENT_COUNTS,
+  s:DEAD_SESSION_COUNTS"
+)
+TBLPROPERTIES("hbase.table.name" = "stats");
+
+
+ SparkStreamingSessionization.jar  
