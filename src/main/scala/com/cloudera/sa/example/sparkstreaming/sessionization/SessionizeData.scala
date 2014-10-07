@@ -39,6 +39,7 @@ object SessionizeData {
   val EVENT_COUNTS = "EVENT_COUNTS"
   val DEAD_SESSION_COUNTS = "DEAD_SESSION_COUNTS"
   val REVISTE_COUNT = "REVISTE_COUNT"
+  val TOTAL_SESSION_EVENT_COUNTS = "TOTAL_SESSION_EVENT_COUNTS"
 
   val dateFormat = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss Z")
 
@@ -79,11 +80,6 @@ object SessionizeData {
       println("port:" + Integer.parseInt(port))
 
       lines = ssc.socketTextStream(host, port.toInt)
-    } else if (args(0).equals("file")) {
-
-      val directory = args(FIXED_ARGS)
-      println("directory:" + directory)
-      lines = ssc.textFileStream(directory)
     } else if (args(0).equals("newFile")) {
 
       val directory = args(FIXED_ARGS)
@@ -99,10 +95,10 @@ object SessionizeData {
       (t.substring(0, t.indexOf(' ')), (time, time, t))
     })
 
-    ipKeyLines.saveAsTextFiles(outputDir + "/ipKeyLines", "txt")
-
-    val latestSessionInfo = ipKeyLines.reduceByKey((a, b) => {
-      (Math.min(a._1, b._1), Math.max(a._2, b._2), "")
+    val latestSessionInfo = ipKeyLines.
+    map[(String, (Long, Long, Long))](a => (a._1, (a._2._1, a._2._2, 1))).
+    reduceByKey((a, b) => {
+      (Math.min(a._1, b._1), Math.max(a._2, b._2), a._3 + b._3)
     }).updateStateByKey(updateStatbyOfSessions)
 
     //remove old sessions
@@ -132,7 +128,9 @@ object SessionizeData {
     val newSessionCount = onlyActiveSessions.filter(t => System.currentTimeMillis() - t._2._2 < 11000 && t._2._4).
       count.map[HashMap[String, Long]](t => HashMap((NEW_SESSION_COUNTS, t)))
     
-      val totalSessionCount = onlyActiveSessions.count.map[HashMap[String, Long]](t => HashMap((TOTAL_SESSION_COUNTS, t)))
+    val totalSessionCount = onlyActiveSessions.count.map[HashMap[String, Long]](t => HashMap((TOTAL_SESSION_COUNTS, t)))
+    
+    val totalSessionEventCount = onlyActiveSessions.map(a => a._2._3).reduce((a,b) => a + b).count.map[HashMap[String, Long]](t => HashMap((TOTAL_SESSION_EVENT_COUNTS, t)))
     
     val totalEventsCount = ipKeyLines.count.map[HashMap[String, Long]](t => HashMap((EVENT_COUNTS, t)))
     
@@ -141,7 +139,11 @@ object SessionizeData {
       gapTime > SESSION_TIMEOUT && gapTime < SESSION_TIMEOUT + 11000
     }).count.map[HashMap[String, Long]](t => HashMap((DEAD_SESSION_COUNTS, t)))
 
-    val allCounts = newSessionCount.union(totalSessionCount).union(totals).union(totalEventsCount).union(deadSessionsCount).reduce((a, b) => b ++ a)
+    val allCounts = newSessionCount.union(totalSessionCount).
+    union(totals).
+    union(totalEventsCount).
+    union(deadSessionsCount).
+    union(totalSessionEventCount).reduce((a, b) => b ++ a)
 
     hbaseContext.streamBulkPut[HashMap[String, Long]](allCounts, hTable, (t) => {
       val put = new Put(Bytes.toBytes("C." + (Long.MaxValue - System.currentTimeMillis())))
@@ -161,25 +163,29 @@ object SessionizeData {
     ssc.awaitTermination
   }
 
-  def updateStatbyOfSessions(a: Seq[(Long, Long, String)], b: Option[(Long, Long, Long, Boolean)]): Option[(Long, Long, Long, Boolean)] = {
+  def updateStatbyOfSessions(a: Seq[(Long, Long, Long)], b: Option[(Long, Long, Long, Boolean)]): Option[(Long, Long, Long, Boolean)] = {
     var result: Option[(Long, Long, Long, Boolean)] = null
 
     if (a.size == 0) {
       if (System.currentTimeMillis() - b.get._2 < SESSION_TIMEOUT + 11000) {
         result = None
       } else {
-        result = b
+        if (b.get._4 == false) {
+          result = b
+        } else {
+          result = Some(( b.get._1,  b.get._2, b.get._3, false))
+        }
       }
     }
 
     a.foreach(c => {
       if (b.isEmpty) {
-        result = Some((c._1, c._2, 1, true))
+        result = Some((c._1, c._2, c._3, true))
       } else {
         if (c._1 - b.get._2 < SESSION_TIMEOUT) {
-          result = Some((Math.min(c._1, b.get._1), Math.max(c._2, b.get._2), b.get._3, false))
+          result = Some((Math.min(c._1, b.get._1), Math.max(c._2, b.get._2), b.get._3 + c._3, false))
         } else {
-          result = Some((c._1, c._2, b.get._3 + 1, true))
+          result = Some((c._1, c._2, b.get._3, true))
         }
       }
     })
