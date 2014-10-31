@@ -10,11 +10,13 @@ object SessionDataGenerator {
   
   val r = new Random
   
-  val numberOfUsers = 100
+  val numberOfUsers = 100000
   
-  val intervalLength = 10000
+  val intervalLength = 1000000
   
-  val userbeingActivePercentage = 0.10
+  val userbeingActivePercentage = 0.15
+  
+  val webSites = List("support.html","about.html","foo.html", "bar.html", "home.html", "search.html", "list.html", "help.html", "bar.html", "foo.html")
   
   var activeUserList = new ArrayList[Int]()
   
@@ -42,6 +44,8 @@ object SessionDataGenerator {
     val ipPart3 = (user/256).toInt
     val ipPart4 = (user%256).toInt
     
-    "66.249." + ipPart3 + "." + ipPart4 + " - - [" + dateFormat.format(System.currentTimeMillis()) + "] \"GET /support.html HTTP/1.1\" 200 11179 \"-\" \"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\""
+    
+    
+    "66.249." + ipPart3 + "." + ipPart4 + " - - [" + dateFormat.format(System.currentTimeMillis()) + "] \"GET /" + webSites(r.nextInt(10)) + " HTTP/1.1\" 200 11179 \"-\" \"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)\""
   }
 }
